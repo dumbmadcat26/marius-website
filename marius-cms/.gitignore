@@ -1,0 +1,31 @@
+############################
+# OS
+############################
+.DS_Store
+Thumbs.db
+
+############################
+# Env / secrets
+############################
+.env
+.env.*
+!.env.example
+
+############################
+# Dependencies / build
+############################
+node_modules/
+dist/
+build/
+.cache/
+.tmp/
+.strapi/
+.strapi-updater.json
+public/uploads/
+*.log
+
+############################
+# Generated import artifacts
+############################
+scripts/parsed-projects.json
+types/generated/

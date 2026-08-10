@@ -1,0 +1,44 @@
+{
+  "name": "marius-cms",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Strapi CMS for Marius Varhaugvik portfolio (WordPress migration)",
+  "scripts": {
+    "build": "strapi build",
+    "console": "strapi console",
+    "deploy": "strapi deploy",
+    "dev": "strapi develop",
+    "develop": "strapi develop",
+    "start": "strapi start",
+    "strapi": "strapi",
+    "upgrade": "npx @strapi/upgrade latest",
+    "upgrade:dry": "npx @strapi/upgrade latest --dry",
+    "parse:wp": "node scripts/parse-wordpress-projects.js",
+    "import:wp": "node scripts/import-wordpress.js"
+  },
+  "dependencies": {
+    "@strapi/database": "5.51.2",
+    "@strapi/plugin-cloud": "5.51.2",
+    "@strapi/plugin-users-permissions": "5.51.2",
+    "@strapi/strapi": "5.51.2",
+    "better-sqlite3": "12.8.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-router-dom": "^6.30.3",
+    "styled-components": "^6.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "typescript": "^5"
+  },
+  "engines": {
+    "node": ">=20.0.0 <=26.x.x",
+    "npm": ">=6.0.0"
+  },
+  "strapi": {
+    "uuid": "cefaaed2-9fb6-496f-a554-29fb65b1c9ee",
+    "installId": "56b25d09bdb7a4e06bbfeac9d5b7268f88aaaf881bcafff99594cd4f3e7a70d5"
+  }
+}
