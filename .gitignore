@@ -26,7 +26,7 @@ npm-debug.log*
 yarn-error.log*
 
 ############################
-# Accidental root install leftovers
+# Local toolchain (optional ffmpeg build)
 ############################
-/package-lock.json
-/package.json
+tools/ffmpeg/
+tools/ffmpeg/_extract/

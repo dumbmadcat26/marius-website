@@ -28,13 +28,20 @@ See [CONTENT_MODEL.md](./CONTENT_MODEL.md). Bootstrap seeds categories, tags, Ab
 
 ## Migration scripts
 
-Stop `develop` before importing (SQLite lock).
+Stop `develop` before importing or converting (SQLite lock).
 
 ```powershell
 npm run parse:wp    # XML + local media → scripts/parsed-projects.json
 npm run import:wp   # upload media + create projects
 npm run import:wp -- --all-media   # also upload unreferenced files
+
+# WAV → AAC 256k .m4a into ../Web_Marius_Original/web/, then link in Strapi
+npm run convert:audio
+npm run convert:audio:files    # ffmpeg only
+npm run convert:audio:strapi   # Strapi upload/link only
 ```
+
+Requires FFmpeg on PATH for conversion (`winget install --id Gyan.FFmpeg.Essentials -e`). Full instructions: [repository README](../README.md).
 
 ## Source data
 
