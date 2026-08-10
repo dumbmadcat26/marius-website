@@ -1,0 +1,87 @@
+{
+  "kind": "collectionType",
+  "collectionName": "projects",
+  "info": {
+    "singularName": "project",
+    "pluralName": "projects",
+    "displayName": "Project",
+    "description": "Individual works from Performing arts, Music, and Motion graphics."
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true
+    },
+    "role": {
+      "type": "string"
+    },
+    "venue": {
+      "type": "string"
+    },
+    "collaborators": {
+      "type": "text"
+    },
+    "year": {
+      "type": "integer"
+    },
+    "summary": {
+      "type": "text"
+    },
+    "body": {
+      "type": "blocks"
+    },
+    "coverImage": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "gallery": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": ["images", "videos", "files"]
+    },
+    "audioFiles": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": ["audios", "files"]
+    },
+    "embedUrl": {
+      "type": "string"
+    },
+    "externalLinks": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.link"
+    },
+    "sortOrder": {
+      "type": "integer",
+      "default": 0
+    },
+    "wordpressSourceUrl": {
+      "type": "string"
+    },
+    "category": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::category.category",
+      "inversedBy": "projects"
+    },
+    "tags": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::tag.tag",
+      "inversedBy": "projects"
+    }
+  }
+}
