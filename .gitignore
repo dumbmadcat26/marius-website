@@ -26,11 +26,6 @@ npm-debug.log*
 yarn-error.log*
 
 ############################
-# Large binary media export (~1GB) — keep locally, not in git
-############################
-Web_Marius_Original/media-export-189650785-from-0-to-556/
-
-############################
 # Accidental root install leftovers
 ############################
 /package-lock.json
