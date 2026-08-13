@@ -17,7 +17,8 @@
     "import:wp": "node scripts/import-wordpress.js",
     "convert:audio": "node scripts/convert-wav-to-web.js",
     "convert:audio:files": "node scripts/convert-wav-to-web.js --convert-only",
-    "convert:audio:strapi": "node scripts/convert-wav-to-web.js --strapi-only"
+    "convert:audio:strapi": "node scripts/convert-wav-to-web.js --strapi-only",
+    "convert:uploads:mp3": "node scripts/convert-uploads-wav-to-mp3.js"
   },
   "dependencies": {
     "@strapi/database": "5.51.2",

@@ -18,7 +18,8 @@ node_modules/
 dist/
 build/
 .cache/
-.tmp/
+.tmp/*
+!.tmp/data.db
 .strapi/
 .strapi-updater.json
 *.log

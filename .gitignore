@@ -13,7 +13,8 @@ Thumbs.db
 ############################
 node_modules/
 marius-cms/node_modules/
-marius-cms/.tmp/
+marius-cms/.tmp/*
+!marius-cms/.tmp/data.db
 marius-cms/.cache/
 marius-cms/dist/
 marius-cms/build/
