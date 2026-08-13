@@ -21,7 +21,6 @@ build/
 .tmp/
 .strapi/
 .strapi-updater.json
-public/uploads/
 *.log
 
 ############################
