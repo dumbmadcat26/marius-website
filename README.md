@@ -1,111 +1,116 @@
-# Web_Marius_Migration
+# Marius Varhaugvik — CMS + portfolio site
 
-WordPress → Strapi migration for [mariusvarhaugvik.com](https://mariusvarhaugvik.com/).
-
-## Layout
+WordPress → Strapi content, with a static Next.js frontend.
 
 | Path | Contents |
 |---|---|
-| `marius-cms/` | Local Strapi 5 CMS (SQLite) |
-| `Web_Marius_Original/` | WordPress XML + media export |
-| `Web_Marius_Original/media-export-189650785-from-0-to-556/` | Source media (includes `.wav`) |
-| `Web_Marius_Original/web/` | Output folder for converted AAC `.m4a` (created by script) |
-| `Web_Marius_Migration_ChatGPT_Proposal/` | CSV/XLSX inventory |
+| `marius-cms/` | Strapi 5 CMS (SQLite + media in `public/uploads`) |
+| `marius-web/` | Static Next.js site (reads Strapi at build/dev time) |
+| `Web_Marius_Original/` | WordPress XML + original media export |
 
-WAV masters in the media export use **Git LFS**. After clone:
+Large media uses **Git LFS** (upload MP3s + original export WAVs).
 
-```powershell
-git lfs install
-git lfs pull
-```
-
-## Prerequisites (new machine)
+## Prerequisites
 
 1. **Git** + **Git LFS**
-2. **Node.js 20.x or 22–24 LTS** (see `marius-cms/.nvmrc`). Avoid Node 26 on Windows for `better-sqlite3`.
-3. **FFmpeg** (only needed for audio conversion):
-   ```powershell
-   winget install --id Gyan.FFmpeg.Essentials -e
-   ffmpeg -version
-   ```
+2. **Node.js 20.x or 22–24 LTS** (`marius-cms/.nvmrc`)
+3. **FFmpeg** (optional — only for re-converting audio)
 
-## Clone & run Strapi
+```bash
+# macOS
+brew install ffmpeg
 
-```powershell
+# Windows
+winget install --id Gyan.FFmpeg.Essentials -e
+```
+
+## Setup
+
+```bash
 git clone https://github.com/dumbmadcat26/marius-website.git
 cd marius-website
 git lfs install
 git lfs pull
 
-nvm use 20.19.4
+# CMS
 cd marius-cms
+cp .env.example .env   # then generate real secrets (see below)
+nvm use                # or: nvm use 20.19.4
 npm install
 npm run develop
 ```
 
-Open http://localhost:1337/admin and create the first admin user.
+CMS admin: http://localhost:1337/admin  
+(Create the first admin user on first boot if prompted.)
 
-More detail: [`marius-cms/README.md`](./marius-cms/README.md) · [`marius-cms/CONTENT_MODEL.md`](./marius-cms/CONTENT_MODEL.md)
+```bash
+# Frontend (second terminal; Strapi must be running)
+cd marius-web
+cp .env.example .env.local
+npm install
+npm run dev
+```
 
-## WordPress → Strapi import
+Site: http://localhost:3000
 
-Stop `npm run develop` first (SQLite lock).
+### Strapi `.env` secrets
 
-```powershell
+Do not commit `.env`. Generate values:
+
+```bash
+node -e "console.log(require('crypto').randomBytes(16).toString('base64url'))"  # APP_KEYS ×4
+node -e "console.log(require('crypto').randomBytes(32).toString('base64url'))"  # other secrets
+```
+
+Required keys (see `marius-cms/.env.example`):
+
+`HOST`, `PORT`, `APP_KEYS`, `API_TOKEN_SALT`, `ADMIN_JWT_SECRET`, `TRANSFER_TOKEN_SALT`, `JWT_SECRET`, `ENCRYPTION_KEY`
+
+### Frontend env
+
+`marius-web/.env.local`:
+
+```env
+STRAPI_URL=http://localhost:1337
+NEXT_PUBLIC_STRAPI_URL=http://localhost:1337
+```
+
+## Daily commands
+
+| Command | Where | Purpose |
+|---|---|---|
+| `npm run develop` | `marius-cms` | Strapi admin + API |
+| `npm run dev` | `marius-web` | Next.js portfolio |
+| `npm run build` | `marius-web` | Static export → `marius-web/out/` |
+
+## Content / media notes
+
+- Portfolio content lives in SQLite at `marius-cms/.tmp/data.db` (tracked in git).
+- Uploaded media lives in `marius-cms/public/uploads/` (MP3 audio via LFS).
+- Site Setting holds About copy, contact, and portrait.
+- Work pages filter by category; project pages include gallery + audio.
+
+### Optional: re-convert upload audio WAV → MP3
+
+Stop Strapi first (SQLite lock), then:
+
+```bash
 cd marius-cms
-npm run parse:wp
-npm run import:wp
-# optional: npm run import:wp -- --all-media
-npm run develop
+npm run convert:uploads:mp3
 ```
 
-## Convert WAV → web AAC + link in Strapi
+Uses ffmpeg **320 kbps** MP3 and updates SQLite file URLs in place.
 
-Stop `develop` before running (needed for the Strapi sync step).
+### Optional: WordPress import / AAC pipeline
 
-```powershell
-cd marius-cms
-npm run convert:audio
-```
-
-What it does:
-
-1. Converts every `.wav` under the media export to **AAC `.m4a` at 256 kbps, stereo** (sample rate preserved)
-2. Leaves original WAV files untouched
-3. Writes outputs to `Web_Marius_Original/web/` (same relative paths, `.m4a` extension)
-4. Skips files that already have a matching `.m4a`
-5. Uploads each `.m4a` into Strapi Media Library if missing
-6. Attaches it to existing **Project** `audioFiles` that already reference the matching `.wav` (no duplicate projects)
-
-```powershell
-npm run convert:audio:files    # ffmpeg only
-npm run convert:audio:strapi   # Strapi upload/link only
-```
-
-Options:
-
-```powershell
-node scripts/convert-wav-to-web.js --force
-node scripts/convert-wav-to-web.js --input "D:\path\to\wavs" --output "D:\path\to\web"
-node scripts/convert-wav-to-web.js --dry-run
-```
-
-## Script reference
-
-| Command | Purpose |
-|---|---|
-| `npm run parse:wp` | Parse WordPress XML → `scripts/parsed-projects.json` |
-| `npm run import:wp` | Import projects + linked media into Strapi |
-| `npm run convert:audio` | WAV → AAC + Strapi link |
-| `npm run convert:audio:files` | Conversion only |
-| `npm run convert:audio:strapi` | Strapi sync only |
+See older helpers in `marius-cms/scripts/` (`parse:wp`, `import:wp`, `convert:audio`). Only needed if re-importing from the WordPress export.
 
 ## Troubleshooting
 
 | Problem | Fix |
 |---|---|
-| `better-sqlite3` / node-gyp | Use Node 20/24 (`nvm use 20.19.4`) |
-| WAV files are tiny text pointers | Run `git lfs pull` |
-| DB lock on import/convert | Stop `strapi develop`, run script, restart |
-| `ffmpeg not found` | Install FFmpeg Essentials via winget (above) |
-| Disk full | Free space before convert (outputs need room) |
+| Tiny audio / media files | `git lfs pull` |
+| `better-sqlite3` build errors | Use Node 20/24 (`nvm use`) |
+| DB locked | Stop `npm run develop`, then run scripts |
+| About image / content missing on site | Ensure Strapi is running; restart `marius-web` dev server |
+| `ffmpeg not found` | Install FFmpeg (above) |
