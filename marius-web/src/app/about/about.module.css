@@ -1,0 +1,80 @@
+.article {
+  max-width: 40rem;
+  animation: rise 0.7s ease both;
+}
+
+.heading {
+  margin: 0 0 1.5rem;
+  font-family: var(--font-sans);
+  font-size: clamp(1.85rem, 3.8vw, 2.4rem);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+
+.portrait {
+  width: min(100%, 20rem);
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  object-position: center 20%;
+  margin: 0 0 1.75rem;
+  border-radius: 2px;
+}
+
+.lead {
+  margin: 0 0 1rem;
+  font-size: 1.15rem;
+  color: var(--ink-soft);
+}
+
+.text {
+  margin: 0 0 1rem;
+  color: var(--ink-soft);
+}
+
+.section {
+  margin-top: 2.25rem;
+}
+
+.section h2 {
+  margin: 0 0 0.75rem;
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.plainList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.plainList li {
+  margin: 0 0 0.45rem;
+  color: var(--ink-soft);
+}
+
+.plainList a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: rgba(242, 239, 232, 0.28);
+  text-underline-offset: 0.18em;
+  transition: text-decoration-color 0.2s ease;
+}
+
+.plainList a:hover {
+  text-decoration-color: var(--ink);
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

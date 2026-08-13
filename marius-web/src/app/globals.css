@@ -1,0 +1,74 @@
+:root {
+  --bg: #0c0c0c;
+  --bg-elevated: #141414;
+  --ink: #f2efe8;
+  --ink-soft: #d6d1c7;
+  --muted: #8d887e;
+  --line: rgba(242, 239, 232, 0.12);
+  --accent: #c4b8a1;
+  --font-sans: var(--font-plex), "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-display: var(--font-sans);
+  --font-body: var(--font-sans);
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--bg);
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  background:
+    radial-gradient(1200px 600px at 10% -10%, rgba(196, 184, 161, 0.08), transparent 55%),
+    radial-gradient(900px 500px at 100% 0%, rgba(255, 255, 255, 0.03), transparent 50%),
+    var(--bg);
+  color: var(--ink);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: inherit;
+}
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+button {
+  color: inherit;
+}
+
+::selection {
+  background: rgba(196, 184, 161, 0.35);
+  color: var(--ink);
+}
+
+.shell {
+  width: min(1080px, calc(100% - 2.5rem));
+  margin: 0 auto;
+  padding: 2.75rem 0 5rem;
+}
+
+@media (max-width: 640px) {
+  .shell {
+    width: min(1080px, calc(100% - 1.5rem));
+    padding-top: 1.75rem;
+  }
+}

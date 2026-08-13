@@ -1,0 +1,138 @@
+.article {
+  animation: rise 0.7s ease both;
+}
+
+.back {
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.back:hover {
+  color: var(--ink);
+}
+
+.header {
+  margin-bottom: 1.75rem;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: clamp(1.85rem, 4.5vw, 2.75rem);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.meta,
+.tags {
+  margin: 0.55rem 0 0;
+  color: var(--muted);
+}
+
+.summary,
+.body p {
+  max-width: 42rem;
+  margin: 0 0 1rem;
+  color: var(--ink-soft);
+  white-space: pre-line;
+}
+
+.body {
+  margin-bottom: 1.5rem;
+}
+
+.embedWrap,
+.embedWrapAudio {
+  position: relative;
+  width: 100%;
+  max-width: 48rem;
+  margin: 1.5rem 0;
+  background: var(--bg-elevated);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.embedWrap {
+  aspect-ratio: 16 / 9;
+}
+
+.embedWrapAudio {
+  min-height: 152px;
+  aspect-ratio: 16 / 5;
+}
+
+.embed {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.section {
+  margin-top: 2.5rem;
+}
+
+.section h2 {
+  margin: 0 0 0.9rem;
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.audioList,
+.links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.audioList li {
+  margin-bottom: 1.1rem;
+}
+
+.audioName {
+  margin: 0 0 0.4rem;
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+}
+
+.audioList audio {
+  width: min(100%, 36rem);
+}
+
+.links li {
+  margin-bottom: 0.45rem;
+}
+
+.links a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: rgba(242, 239, 232, 0.28);
+  text-underline-offset: 0.18em;
+}
+
+.links a:hover {
+  text-decoration-color: var(--ink);
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

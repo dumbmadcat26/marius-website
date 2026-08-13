@@ -1,0 +1,112 @@
+.wrap {
+  margin: 0 0 1.75rem;
+}
+
+.viewport {
+  overflow: hidden;
+  border-radius: 2px;
+  background: var(--bg-elevated);
+  touch-action: pan-y pinch-zoom;
+}
+
+.container {
+  display: flex;
+}
+
+.slide {
+  flex: 0 0 100%;
+  min-width: 0;
+}
+
+.slideImage {
+  display: block;
+  width: 100%;
+  max-height: min(72vh, 820px);
+  object-fit: contain;
+  background: #000;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.75rem;
+}
+
+.navBtn {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--font-sans);
+  font-size: 1.1rem;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  padding: 0.2rem 0.35rem;
+  transition: color 0.2s ease;
+}
+
+.navBtn:hover {
+  color: var(--ink);
+}
+
+.counter {
+  margin: 0;
+  text-align: center;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.thumbs {
+  list-style: none;
+  margin: 0.9rem 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(4.5rem, 1fr));
+  gap: 0.45rem;
+}
+
+.thumb,
+.thumbActive {
+  appearance: none;
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  overflow: hidden;
+  background: var(--bg-elevated);
+  cursor: pointer;
+  transition: border-color 0.2s ease, opacity 0.2s ease;
+}
+
+.thumb {
+  opacity: 0.62;
+}
+
+.thumb:hover {
+  opacity: 0.9;
+}
+
+.thumbActive {
+  opacity: 1;
+  border-color: rgba(242, 239, 232, 0.55);
+}
+
+.thumb img,
+.thumbActive img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (max-width: 560px) {
+  .thumbs {
+    grid-template-columns: repeat(auto-fill, minmax(3.75rem, 1fr));
+    gap: 0.35rem;
+  }
+}
