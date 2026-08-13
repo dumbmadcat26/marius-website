@@ -20,6 +20,12 @@
       "type": "string",
       "default": "composer, sound designer & artistic stage engineer"
     },
+    "email": {
+      "type": "email"
+    },
+    "phone": {
+      "type": "string"
+    },
     "portrait": {
       "type": "media",
       "multiple": false,

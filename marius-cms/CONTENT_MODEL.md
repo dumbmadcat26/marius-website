@@ -11,7 +11,7 @@ Adapted from the [Strapi travel-blog guide](https://strapi.io/blog/start-travel-
 | Tag | **Tag** | Role & format labels across categories |
 | PhotoGallery | Project `gallery` + `audioFiles` | Media lives on the project |
 | (n/a) | **Page** | About, Contact |
-| (n/a) | **Site Setting** | Brand, bio, socials |
+| (n/a) | **Site Setting** | Brand, bio, contact (email/phone), socials |
 
 ## Categories (primary nav)
 

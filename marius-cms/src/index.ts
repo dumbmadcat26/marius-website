@@ -1,4 +1,14 @@
+import fs from 'fs';
+import path from 'path';
 import type { Core } from '@strapi/strapi';
+
+const ABOUT_PORTRAIT_CANDIDATES = [
+  path.resolve(
+    __dirname,
+    '../../../Web_Marius_Original/media-export-189650785-from-0-to-556/2025/11/img_5166.jpg',
+  ),
+  path.resolve(__dirname, '../../../media-export-189650785-from-0-to-556/2025/11/img_5166.jpg'),
+];
 
 const CATEGORIES = [
   {
@@ -70,70 +80,141 @@ async function seedTags(strapi: Core.Strapi) {
   }
 }
 
+const SITE_SETTING_DEFAULTS = {
+  siteName: 'Marius Varhaugvik',
+  tagline: 'composer, sound designer & artistic stage engineer',
+  email: 'marius.varhaugvik@gmail.com',
+  phone: '+46700544434',
+  bioIntro: 'Sound designer, composer & artistic stage engineer',
+  locationNote: 'From Stockholm, Sweden. Lived in Berlin, Germany & Molde, Norway',
+  whatIDo: [
+    'Composer',
+    'Artistic stage engineer',
+    'Mix & master',
+    'Sound designer',
+    'Sound technician',
+    'Light design',
+  ],
+  education: [
+    {
+      institution: 'Stockholm University of the Arts',
+      program: 'Sound Design',
+      years: '2021-2024',
+    },
+    {
+      institution: 'Uppsala University',
+      program: 'Musiklivets organisation och strukturer',
+      years: '2016',
+    },
+  ],
+  awards: [
+    {
+      title: 'Årets politiska',
+      year: '2017',
+      organization: 'Scenkonstgalan',
+    },
+    {
+      title: 'Festival hero award',
+      year: '2025',
+      organization: 'Fringe festival',
+    },
+    {
+      title: 'Out of body experience',
+      year: '2025',
+      organization: 'Fringe festival',
+    },
+  ],
+  socialLinks: [
+    { platform: 'instagram' as const, url: 'https://www.instagram.com/', label: 'Instagram' },
+    { platform: 'linkedin' as const, url: 'https://www.linkedin.com/', label: 'LinkedIn' },
+    { platform: 'youtube' as const, url: 'https://www.youtube.com/', label: 'YouTube' },
+    { platform: 'facebook' as const, url: 'https://www.facebook.com/', label: 'Facebook' },
+  ],
+  internships: [
+    { label: 'Ambiens, 2021', url: 'https://ambiens.studio/' },
+    {
+      label: 'KonstAB, 2023',
+      url: 'https://www.dramaten.se/repertoar/konstabs-ingmar-bergmans-sasom-i-en-spegel',
+    },
+  ],
+};
+
+async function uploadAboutPortrait(strapi: Core.Strapi) {
+  const existingFile = await strapi.db.query('plugin::upload.file').findOne({
+    where: { name: 'img_5166.jpg' },
+  });
+  if (existingFile) return existingFile;
+
+  const filePath = ABOUT_PORTRAIT_CANDIDATES.find((candidate) => fs.existsSync(candidate));
+  if (!filePath) {
+    strapi.log.warn('About portrait source img_5166.jpg not found in media export');
+    return null;
+  }
+
+  const stats = fs.statSync(filePath);
+  const uploaded = await strapi.plugin('upload').service('upload').upload({
+    data: {
+      fileInfo: {
+        name: 'img_5166.jpg',
+        alternativeText: 'Marius Varhaugvik',
+        caption: 'About portrait',
+      },
+    },
+    files: {
+      filepath: filePath,
+      originalFilename: 'img_5166.jpg',
+      mimetype: 'image/jpeg',
+      size: stats.size,
+    },
+  });
+
+  return Array.isArray(uploaded) ? uploaded[0] : uploaded;
+}
+
+async function ensureAboutPortrait(strapi: Core.Strapi, documentId: string) {
+  const current = await strapi.db.query('api::site-setting.site-setting').findOne({
+    where: { documentId },
+    populate: ['portrait'],
+  });
+
+  if (current?.portrait) return;
+
+  const file = await uploadAboutPortrait(strapi);
+  if (!file?.id) return;
+
+  await strapi.documents('api::site-setting.site-setting').update({
+    documentId,
+    data: { portrait: file.id },
+  });
+  strapi.log.info('Attached About portrait (img_5166.jpg) to site settings');
+}
+
 async function seedSiteSetting(strapi: Core.Strapi) {
   const existing = await strapi.db.query('api::site-setting.site-setting').findOne({});
 
   if (!existing) {
-    await strapi.documents('api::site-setting.site-setting').create({
-      data: {
-        siteName: 'Marius Varhaugvik',
-        tagline: 'composer, sound designer & artistic stage engineer',
-        bioIntro: 'Sound designer, composer & artistic stage engineer',
-        locationNote: 'From Stockholm, Sweden. Lived in Berlin, Germany & Molde, Norway',
-        whatIDo: [
-          'Composer',
-          'Artistic stage engineer',
-          'Mix & master',
-          'Sound designer',
-          'Sound technician',
-          'Light design',
-        ],
-        education: [
-          {
-            institution: 'Stockholm University of the Arts',
-            program: 'Sound Design',
-            years: '2021-2024',
-          },
-          {
-            institution: 'Uppsala University',
-            program: 'Musiklivets organisation och strukturer',
-            years: '2016',
-          },
-        ],
-        awards: [
-          {
-            title: 'Årets politiska',
-            year: '2017',
-            organization: 'Scenkonstgalan',
-          },
-          {
-            title: 'Festival hero award',
-            year: '2025',
-            organization: 'Fringe festival',
-          },
-          {
-            title: 'Out of body experience',
-            year: '2025',
-            organization: 'Fringe festival',
-          },
-        ],
-        socialLinks: [
-          { platform: 'instagram', url: 'https://www.instagram.com/', label: 'Instagram' },
-          { platform: 'linkedin', url: 'https://www.linkedin.com/', label: 'LinkedIn' },
-          { platform: 'youtube', url: 'https://www.youtube.com/', label: 'YouTube' },
-          { platform: 'facebook', url: 'https://www.facebook.com/', label: 'Facebook' },
-        ],
-        internships: [
-          { label: 'Ambiens, 2021', url: 'https://ambiens.studio/' },
-          {
-            label: 'KonstAB, 2023',
-            url: 'https://www.dramaten.se/repertoar/konstabs-ingmar-bergmans-sasom-i-en-spegel',
-          },
-        ],
-      },
+    const created = await strapi.documents('api::site-setting.site-setting').create({
+      data: SITE_SETTING_DEFAULTS,
     });
     strapi.log.info('Seeded site settings');
+    await ensureAboutPortrait(strapi, created.documentId);
+    return;
   }
+
+  // Patch contact fields on existing installs (seed originally skipped when a row existed).
+  const patch: Record<string, string> = {};
+  if (!existing.email) patch.email = SITE_SETTING_DEFAULTS.email;
+  if (!existing.phone) patch.phone = SITE_SETTING_DEFAULTS.phone;
+
+  if (Object.keys(patch).length > 0) {
+    await strapi.documents('api::site-setting.site-setting').update({
+      documentId: existing.documentId,
+      data: patch,
+    });
+    strapi.log.info(`Patched site settings contact fields: ${Object.keys(patch).join(', ')}`);
+  }
+
+  await ensureAboutPortrait(strapi, existing.documentId);
 }
 
 async function seedPages(strapi: Core.Strapi) {
