@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev --turbopack -p 3000",
     "build": "next build",
+    "build:static": "node scripts/prepare-static.mjs && STRAPI_URL=http://localhost:1337 NEXT_PUBLIC_STRAPI_URL= next build",
     "start": "next start",
     "lint": "next lint"
   },

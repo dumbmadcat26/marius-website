@@ -1,0 +1,15 @@
+# Static portfolio export (marius-web/out/)
+# Build locally or in CI with Strapi running — see README "Netlify deploy".
+
+[build]
+  base = "marius-web"
+  publish = "out"
+  command = "node scripts/prepare-static.mjs && STRAPI_URL=http://localhost:1337 NEXT_PUBLIC_STRAPI_URL= npm run build"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+[[headers]]
+  for = "/uploads/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

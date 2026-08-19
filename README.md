@@ -81,7 +81,42 @@ NEXT_PUBLIC_STRAPI_URL=http://localhost:1337
 |---|---|---|
 | `npm run develop` | `marius-cms` | Strapi admin + API |
 | `npm run dev` | `marius-web` | Next.js portfolio |
-| `npm run build` | `marius-web` | Static export → `marius-web/out/` |
+| `npm run build` | Static export → `marius-web/out/` |
+| `npm run build:static` | Copy CMS uploads + export with relative media URLs |
+
+## Deploying to Netlify (static)
+
+The frontend is already a **fully static export** (`output: "export"` in `next.config.ts`). Content from the SQLite database is fetched from Strapi at **build time** and baked into HTML. Media files are served as static assets.
+
+**What gets deployed:** only `marius-web/out/` — not Strapi, not the database file at runtime.
+
+### Local static build (recommended)
+
+1. Start Strapi (`cd marius-cms && npm run develop`).
+2. In a second terminal:
+
+```bash
+cd marius-web
+npm run build:static
+```
+
+This copies `marius-cms/public/uploads/` → `marius-web/public/uploads/` and builds with relative media URLs (`/uploads/...`).
+
+3. Deploy the `marius-web/out/` folder to Netlify (drag-and-drop, CLI, or Git).
+
+### Netlify Git deploy
+
+A `netlify.toml` is included at the repo root. **Strapi must be running during the Netlify build** so Next.js can fetch project data — configure the same Strapi secrets from `marius-cms/.env.example` as Netlify environment variables, and use a build command that starts Strapi before `npm run build:static`. The simplest path is often to run `build:static` locally or in your own CI and publish `out/`.
+
+### What is / isn't included
+
+| Included in static site | Not on Netlify (unless you host separately) |
+|---|---|
+| All project pages, about page, filters | Strapi admin UI |
+| Images & audio in `public/uploads/` | Live CMS editing |
+| Content baked in at build time | SQLite at runtime |
+
+After CMS edits, re-run `build:static` and redeploy.
 
 ## Content / media notes
 

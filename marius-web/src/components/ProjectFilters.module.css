@@ -72,6 +72,100 @@
   height: 100%;
   object-fit: cover;
   display: block;
+  transition: transform 0.35s ease;
+}
+
+.cardLink:hover .image {
+  transform: scale(1.02);
+}
+
+.audioBadge {
+  position: absolute;
+  right: 0.55rem;
+  bottom: 0.55rem;
+  display: grid;
+  place-items: center;
+  width: 1.65rem;
+  height: 1.65rem;
+  border-radius: 999px;
+  background: rgba(12, 12, 12, 0.72);
+  border: 1px solid rgba(242, 239, 232, 0.14);
+  backdrop-filter: blur(6px);
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.audioBadgeActive {
+  background: rgba(12, 12, 12, 0.88);
+  border-color: rgba(196, 184, 161, 0.45);
+}
+
+.audioIdleMark {
+  width: 0.35rem;
+  height: 0.35rem;
+  border-radius: 999px;
+  background: var(--accent);
+  opacity: 0.75;
+}
+
+.audioLoading {
+  width: 0.75rem;
+  height: 0.75rem;
+  border: 1.5px solid rgba(242, 239, 232, 0.25);
+  border-top-color: var(--accent);
+  border-radius: 999px;
+  animation: audioSpin 0.7s linear infinite;
+}
+
+.audioBars {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 0.72rem;
+}
+
+.audioBars span {
+  display: block;
+  width: 2px;
+  height: 100%;
+  background: var(--accent);
+  border-radius: 1px;
+  transform-origin: bottom;
+  animation: audioBar 0.75s ease-in-out infinite;
+}
+
+.audioBars span:nth-child(2) {
+  animation-delay: 0.12s;
+}
+
+.audioBars span:nth-child(3) {
+  animation-delay: 0.24s;
+}
+
+@keyframes audioSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes audioBar {
+  0%,
+  100% {
+    transform: scaleY(0.35);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .audioLoading,
+  .audioBars span {
+    animation: none;
+  }
+
+  .audioBars span {
+    transform: scaleY(0.65);
+  }
 }
 
 .fallback {

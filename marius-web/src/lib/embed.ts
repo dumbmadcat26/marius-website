@@ -1,5 +1,5 @@
 import type { Project } from "./types";
-import { mediaUrl, projectMainImage } from "./media";
+import { mediaUrl, projectAudioUrl, projectMainImage } from "./media";
 
 /** Clean WP-exported junk like `\u0026amp;` and leading spaces. */
 export function cleanUrl(raw?: string | null): string | null {
@@ -134,6 +134,7 @@ export async function resolveProjectPreviewUrl(
 
 export type ProjectCard = Project & {
   previewUrl: string | null;
+  audioUrl: string | null;
 };
 
 export async function withPreviewUrls(
@@ -143,6 +144,7 @@ export async function withPreviewUrls(
     projects.map(async (project) => ({
       ...project,
       previewUrl: await resolveProjectPreviewUrl(project),
+      audioUrl: projectAudioUrl(project),
     })),
   );
 }

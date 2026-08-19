@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { ImageGallery } from "@/components/ImageGallery";
 import { SiteHeader } from "@/components/SiteHeader";
 import { toEmbedSrc } from "@/lib/embed";
-import { mediaUrl } from "@/lib/media";
+import { isAudio, mediaUrl } from "@/lib/media";
 import {
   blocksToPlainText,
   getProjectBySlug,
@@ -30,13 +30,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: project.title,
     description: project.summary || project.role || undefined,
   };
-}
-
-function isAudio(mime?: string | null, ext?: string | null) {
-  if (mime?.startsWith("audio/")) return true;
-  return Boolean(
-    ext && [".wav", ".mp3", ".m4a", ".aac", ".ogg"].includes(ext.toLowerCase()),
-  );
 }
 
 function isImageMedia(
