@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Sans } from "next/font/google";
+import Script from "next/script";
+import { StartupScreen } from "@/components/StartupScreen";
+import { STARTUP_SESSION_SCRIPT } from "@/lib/startup";
 import { getSiteSetting } from "@/lib/strapi";
 import "./globals.css";
 
@@ -37,7 +40,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={plexSans.variable}>
-      <body>{children}</body>
+      <head>
+        <link rel="preload" href="/marius-intro.jpg" as="image" />
+      </head>
+      <body>
+        <Script id="startup-session" strategy="beforeInteractive">
+          {STARTUP_SESSION_SCRIPT}
+        </Script>
+        <noscript>
+          <style>{`[data-startup]{display:none!important}`}</style>
+        </noscript>
+        <StartupScreen>{children}</StartupScreen>
+      </body>
     </html>
   );
 }
