@@ -2,24 +2,21 @@
 
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { unlockAudioPlayback } from "@/lib/audioUnlock";
-import {
-  hasEnteredStartup,
-  markStartupEntered,
-  revealEnteredDocument,
-} from "@/lib/startup";
 import styles from "./StartupScreen.module.css";
 
-const INTRO_SRC = "/marius-intro.jpg";
-const LEAVE_MS = 700;
+const INTRO_SRC = "/marius-intro.png";
+const VINYL_SRC = "/marius-vinyl.png";
+const RUN_MS = 950;
+const FADE_MS = 700;
 
-type Phase = "blocking" | "intro" | "leaving" | "done";
+type Phase = "intro" | "leaving" | "fading" | "done";
 
 type Props = {
   children: ReactNode;
 };
 
 export function StartupScreen({ children }: Props) {
-  const [phase, setPhase] = useState<Phase>("blocking");
+  const [phase, setPhase] = useState<Phase>("intro");
   const [assetsReady, setAssetsReady] = useState(false);
   const characterRef = useRef<HTMLImageElement>(null);
   const pendingRef = useRef(false);
@@ -40,15 +37,6 @@ export function StartupScreen({ children }: Props) {
     introShakeRef.current = true;
     playShake();
   }, [playShake]);
-
-  useEffect(() => {
-    if (hasEnteredStartup()) {
-      revealEnteredDocument();
-      setPhase("done");
-      return;
-    }
-    setPhase("intro");
-  }, []);
 
   useEffect(() => {
     if (phase !== "intro") return;
@@ -86,12 +74,11 @@ export function StartupScreen({ children }: Props) {
   const beginLeave = useCallback(() => {
     if (leavingRef.current || phase === "done") return;
     leavingRef.current = true;
-    markStartupEntered();
     setPhase("leaving");
   }, [phase]);
 
   const requestContinue = useCallback(() => {
-    if (phase !== "intro" && phase !== "blocking") return;
+    if (phase !== "intro") return;
     unlockAudioPlayback();
     if (assetsReady) {
       beginLeave();
@@ -108,22 +95,26 @@ export function StartupScreen({ children }: Props) {
     if (phase !== "leaving") return;
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const finish = () => {
-      revealEnteredDocument();
-      setPhase("done");
-    };
-
     if (reduced) {
-      finish();
+      setPhase("fading");
       return;
     }
 
-    const timer = window.setTimeout(finish, LEAVE_MS);
+    const timer = window.setTimeout(() => setPhase("fading"), RUN_MS);
     return () => window.clearTimeout(timer);
   }, [phase]);
 
   useEffect(() => {
-    if (phase !== "intro" && phase !== "blocking") return;
+    if (phase !== "fading") return;
+
+    const timer = window.setTimeout(() => {
+      setPhase("done");
+    }, FADE_MS);
+    return () => window.clearTimeout(timer);
+  }, [phase]);
+
+  useEffect(() => {
+    if (phase !== "intro") return;
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.metaKey || event.ctrlKey || event.altKey || event.isComposing) {
@@ -152,7 +143,7 @@ export function StartupScreen({ children }: Props) {
       <div inert={visible ? true : undefined}>{children}</div>
       {visible ? (
         <div
-          className={`${styles.overlay} ${phase === "leaving" ? styles.overlayLeaving : ""}`}
+          className={`${styles.overlay} ${phase === "leaving" || phase === "fading" ? styles.overlayLeaving : ""} ${phase === "fading" ? styles.overlayFading : ""}`}
           data-startup
           role="dialog"
           aria-modal="true"
@@ -161,19 +152,30 @@ export function StartupScreen({ children }: Props) {
           onClick={requestContinue}
         >
           <div className={styles.stage}>
-            <div className={styles.figure}>
+            <div className={styles.scene}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                ref={characterRef}
-                className={styles.character}
-                src={INTRO_SRC}
-                alt="Marius"
-                width={956}
+                className={styles.vinyl}
+                src={VINYL_SRC}
+                alt=""
+                width={1024}
                 height={1024}
                 draggable={false}
-                onLoad={playIntroShake}
-                onPointerEnter={playShake}
               />
+              <div className={styles.figure}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  ref={characterRef}
+                  className={`${styles.character} ${phase === "leaving" || phase === "fading" ? styles.running : ""}`}
+                  src={INTRO_SRC}
+                  alt="Marius"
+                  width={1882}
+                  height={2014}
+                  draggable={false}
+                  onLoad={playIntroShake}
+                  onPointerEnter={phase === "intro" ? playShake : undefined}
+                />
+              </div>
             </div>
             <p id="startup-prompt" className={styles.prompt}>
               Click or press any key to continue

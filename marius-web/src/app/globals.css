@@ -22,14 +22,6 @@ html {
   background: var(--bg);
 }
 
-html:not([data-entered]) {
-  background: #000;
-}
-
-html[data-entered] [data-startup] {
-  display: none;
-}
-
 html,
 body {
   margin: 0;

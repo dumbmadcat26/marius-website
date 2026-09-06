@@ -1,6 +1,13 @@
 .article {
-  max-width: 40rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(14rem, 22rem);
+  gap: 2.5rem 3.5rem;
+  align-items: start;
   animation: rise 0.7s ease both;
+}
+
+.copy {
+  min-width: 0;
 }
 
 .heading {
@@ -11,12 +18,16 @@
   letter-spacing: -0.03em;
 }
 
+.media {
+  position: sticky;
+  top: 1.5rem;
+}
+
 .portrait {
-  width: min(100%, 20rem);
+  width: 100%;
   aspect-ratio: 1 / 1;
   object-fit: cover;
   object-position: center 20%;
-  margin: 0 0 1.75rem;
   border-radius: 2px;
 }
 
@@ -76,5 +87,18 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@media (max-width: 800px) {
+  .article {
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+  }
+
+  .media {
+    position: static;
+    order: -1;
+    max-width: 20rem;
   }
 }
