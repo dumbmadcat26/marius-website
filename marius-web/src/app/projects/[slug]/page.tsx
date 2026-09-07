@@ -153,7 +153,6 @@ export default async function ProjectPage({ params }: Props) {
                 const url = mediaUrl(file)!;
                 return (
                   <li key={file.id || url}>
-                    <p className={styles.audioName}>{file.name || "Audio"}</p>
                     {isAudio(file.mime, file.ext) ? (
                       <audio controls preload="none" src={url}>
                         <a href={url}>Download audio</a>
