@@ -10,18 +10,31 @@ const RUN_MS = 950;
 const FADE_MS = 700;
 
 type Phase = "intro" | "leaving" | "fading" | "done";
+type Variant = "blue" | "red";
 
 type Props = {
   children: ReactNode;
 };
 
+function readVariant(): Variant {
+  if (typeof window === "undefined") return "blue";
+  return new URLSearchParams(window.location.search).get("variant") === "red"
+    ? "red"
+    : "blue";
+}
+
 export function StartupScreen({ children }: Props) {
   const [phase, setPhase] = useState<Phase>("intro");
+  const [variant, setVariant] = useState<Variant>("blue");
   const [assetsReady, setAssetsReady] = useState(false);
   const characterRef = useRef<HTMLImageElement>(null);
   const pendingRef = useRef(false);
   const leavingRef = useRef(false);
   const introShakeRef = useRef(false);
+
+  useEffect(() => {
+    setVariant(readVariant());
+  }, []);
 
   const playShake = useCallback(() => {
     const el = characterRef.current;
@@ -137,13 +150,14 @@ export function StartupScreen({ children }: Props) {
   }, [phase]);
 
   const visible = phase !== "done";
+  const isRed = variant === "red";
 
   return (
     <>
       <div inert={visible ? true : undefined}>{children}</div>
       {visible ? (
         <div
-          className={`${styles.overlay} ${phase === "leaving" || phase === "fading" ? styles.overlayLeaving : ""} ${phase === "fading" ? styles.overlayFading : ""}`}
+          className={`${styles.overlay} ${isRed ? styles.overlayRed : styles.overlayBlue} ${phase === "leaving" || phase === "fading" ? styles.overlayLeaving : ""} ${phase === "fading" ? styles.overlayFading : ""}`}
           data-startup
           role="dialog"
           aria-modal="true"
@@ -152,16 +166,18 @@ export function StartupScreen({ children }: Props) {
           onClick={requestContinue}
         >
           <div className={styles.stage}>
-            <div className={styles.scene}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                className={styles.vinyl}
-                src={VINYL_SRC}
-                alt=""
-                width={1024}
-                height={1024}
-                draggable={false}
-              />
+            <div className={`${styles.scene} ${isRed ? styles.sceneWithVinyl : styles.sceneSolo}`}>
+              {isRed ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  className={styles.vinyl}
+                  src={VINYL_SRC}
+                  alt=""
+                  width={1024}
+                  height={1024}
+                  draggable={false}
+                />
+              ) : null}
               <div className={styles.figure}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img

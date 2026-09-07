@@ -6,10 +6,21 @@
   place-items: center;
   overflow: hidden;
   padding: 1.5rem;
-  background: #000;
   cursor: pointer;
   user-select: none;
   overscroll-behavior: none;
+}
+
+.overlayBlue {
+  background: linear-gradient(to bottom, #000010 0%, #000066 40%, #0000ff 100%);
+}
+
+.overlayBlue .prompt {
+  color: rgba(242, 239, 232, 0.72);
+}
+
+.overlayRed {
+  background: #000;
 }
 
 .overlayLeaving .prompt {
@@ -32,9 +43,17 @@
 .scene {
   position: relative;
   width: 100%;
-  aspect-ratio: 1;
   display: grid;
   place-items: center;
+}
+
+.sceneWithVinyl {
+  aspect-ratio: 1;
+}
+
+.sceneSolo {
+  aspect-ratio: auto;
+  min-height: min(28rem, 62vmin);
 }
 
 .figure {
@@ -44,6 +63,10 @@
   place-items: center;
   width: 56%;
   animation: rise 0.7s ease both;
+}
+
+.sceneSolo .figure {
+  width: min(18rem, 52%);
 }
 
 .vinyl {
@@ -168,6 +191,10 @@
 
   .figure {
     width: 62%;
+  }
+
+  .sceneSolo .figure {
+    width: min(14rem, 68%);
   }
 
   .prompt {
