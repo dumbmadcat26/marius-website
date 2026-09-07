@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { ProjectGridCard } from "@/components/ProjectGridCard";
-import { useHoverAudio } from "@/hooks/useHoverAudio";
+import { useHoverAudio } from "@/components/HoverAudioProvider";
 import type { Category, Tag } from "@/lib/types";
 import type { ProjectCard } from "@/lib/embed";
 import styles from "./ProjectFilters.module.css";

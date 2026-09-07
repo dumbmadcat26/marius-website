@@ -3,6 +3,10 @@ const SILENT_WAV =
 
 let unlocked = false;
 
+export function isAudioUnlocked(): boolean {
+  return unlocked;
+}
+
 /** Play a silent buffer inside a user gesture so later hover audio can start. */
 export function unlockAudioPlayback(): void {
   if (unlocked || typeof window === "undefined") return;

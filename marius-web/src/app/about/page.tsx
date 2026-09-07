@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { SiteHeader } from "@/components/SiteHeader";
-import { getStrapiUrl, mediaUrl } from "@/lib/media";
+import { mediaUrl } from "@/lib/media";
 import { getSiteSetting } from "@/lib/strapi";
 import styles from "./about.module.css";
 
@@ -24,10 +24,7 @@ export default async function AboutPage() {
   const portrait =
     mediaUrl(site.portrait, "large") ||
     mediaUrl(site.portrait, "medium") ||
-    mediaUrl(site.portrait) ||
-    (site.portrait?.url
-      ? `${getStrapiUrl()}${site.portrait.url.startsWith("/") ? "" : "/"}${site.portrait.url}`
-      : null);
+    mediaUrl(site.portrait);
   const socials = (site.socialLinks || []).filter(
     (link) => link.url && !/^https?:\/\/(www\.)?(instagram|linkedin|youtube|facebook)\.com\/?$/i.test(link.url),
   );

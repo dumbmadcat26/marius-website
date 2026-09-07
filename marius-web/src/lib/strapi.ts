@@ -1,7 +1,13 @@
 import type { Category, Project, SiteSetting, Tag } from "./types";
-import { getStrapiUrl } from "./media";
+import { getStrapiApiUrl } from "./media";
 
-export { getStrapiUrl, mediaUrl, projectMainImage } from "./media";
+export {
+  getMediaBaseUrl,
+  getStrapiApiUrl,
+  getStrapiUrl,
+  mediaUrl,
+  projectMainImage,
+} from "./media";
 
 type StrapiListResponse<T> = {
   data: T[];
@@ -20,7 +26,7 @@ type StrapiSingleResponse<T> = {
 };
 
 async function strapiFetch<T>(path: string): Promise<T> {
-  const url = `${getStrapiUrl()}${path.startsWith("/") ? "" : "/"}${path}`;
+  const url = `${getStrapiApiUrl()}${path.startsWith("/") ? "" : "/"}${path}`;
   const res = await fetch(url, {
     headers: { Accept: "application/json" },
     // Fresh data in `next dev`; cacheable fetches for static `next build` export.

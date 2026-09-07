@@ -21,8 +21,24 @@ npm run dev
 | Command | Purpose |
 |---|---|
 | `npm run dev` | Dev server (Turbopack) on port 3000 |
-| `npm run build` | Static export → `out/` |
+| `npm run build` | Static export → `out/` (dev-oriented; can bake localhost media) |
+| `npm run build:static` | **Netlify / deploy:** copy uploads, relative `/uploads/` URLs, verify no localhost |
 | `npm run lint` | ESLint |
+
+## Static / Netlify media URLs
+
+Dev `.env.local` sets `NEXT_PUBLIC_STRAPI_URL=http://localhost:1337` so images load from Strapi while editing.
+
+For a deployable export, media must be **same-origin**:
+
+```bash
+# Strapi must be running
+npm run build:static
+```
+
+That produces `/uploads/...` paths (not `http://localhost:1337/uploads/...`) and copies CMS media into `public/uploads/` → `out/uploads/`.
+
+See the root `README.md` section **Deploying to Netlify**.
 
 ## Routes
 

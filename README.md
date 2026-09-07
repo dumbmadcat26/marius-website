@@ -68,12 +68,32 @@ Required keys (see `marius-cms/.env.example`):
 
 ### Frontend env
 
-`marius-web/.env.local`:
+`marius-web/.env.local` (for **local development** only):
 
 ```env
 STRAPI_URL=http://localhost:1337
 NEXT_PUBLIC_STRAPI_URL=http://localhost:1337
 ```
+
+| Variable | Role |
+|---|---|
+| `STRAPI_URL` | Where Next fetches content at build/dev time (API only) |
+| `NEXT_PUBLIC_STRAPI_URL` | Prefixed onto image/audio paths in the browser |
+
+**Important for Netlify / static deploy:** do **not** use plain `npm run build` after copying `.env.example` → `.env.local`. That can bake `http://localhost:1337/uploads/...` into HTML. Always use:
+
+```bash
+cd marius-web
+npm run build:static
+```
+
+That script:
+
+1. Copies `marius-cms/public/uploads/` → `marius-web/public/uploads/`
+2. Builds with empty media base → relative `/uploads/...` URLs
+3. Verifies the export contains **no** `localhost` URLs
+
+Production builds also ignore localhost in `NEXT_PUBLIC_STRAPI_URL`, so a fresh clone with a typical `.env.local` will still emit relative media paths when you run `build:static`.
 
 ## Daily commands
 
@@ -81,39 +101,55 @@ NEXT_PUBLIC_STRAPI_URL=http://localhost:1337
 |---|---|---|
 | `npm run develop` | `marius-cms` | Strapi admin + API |
 | `npm run dev` | `marius-web` | Next.js portfolio |
-| `npm run build` | Static export → `marius-web/out/` |
-| `npm run build:static` | Copy CMS uploads + export with relative media URLs |
+| `npm run build` | `marius-web` | Static export only (may keep localhost media if env is wrong) |
+| `npm run build:static` | `marius-web` | **Use this for Netlify** — copy uploads + relative media URLs + verify |
 
 ## Deploying to Netlify (static)
 
-The frontend is already a **fully static export** (`output: "export"` in `next.config.ts`). Content from the SQLite database is fetched from Strapi at **build time** and baked into HTML. Media files are served as static assets.
+The frontend is already a **fully static export** (`output: "export"` in `next.config.ts`). Content from the SQLite database is fetched from Strapi at **build time** and baked into HTML. Media files must ship as static files under `/uploads/`.
 
-**What gets deployed:** only `marius-web/out/` — not Strapi, not the database file at runtime.
+**What gets deployed:** only `marius-web/out/` (or a copy of it) — not Strapi, not the database file at runtime.
+
+### Media URLs (must be relative)
+
+After a correct static build, images and audio look like:
+
+```
+/uploads/medium_example.jpg
+/uploads/track_abc123.mp3
+```
+
+**Wrong** (broken on Netlify / any other machine):
+
+```
+http://localhost:1337/uploads/medium_example.jpg
+```
+
+If you see localhost in the deployed site: rebuild with `npm run build:static`, confirm `node scripts/verify-static-urls.mjs` passes, then redeploy `out/`.
 
 ### Local static build (recommended)
 
-1. Start Strapi (`cd marius-cms && npm run develop`).
-2. In a second terminal:
+1. `git lfs pull` (media files).
+2. Start Strapi (`cd marius-cms && npm run develop`).
+3. In a second terminal:
 
 ```bash
 cd marius-web
 npm run build:static
 ```
 
-This copies `marius-cms/public/uploads/` → `marius-web/public/uploads/` and builds with relative media URLs (`/uploads/...`).
-
-3. Deploy the `marius-web/out/` folder to Netlify (drag-and-drop, CLI, or Git).
+4. Deploy `marius-web/out/` to Netlify (drag-and-drop, CLI, or push a separate static repo).
 
 ### Netlify Git deploy
 
-A `netlify.toml` is included at the repo root. **Strapi must be running during the Netlify build** so Next.js can fetch project data — configure the same Strapi secrets from `marius-cms/.env.example` as Netlify environment variables, and use a build command that starts Strapi before `npm run build:static`. The simplest path is often to run `build:static` locally or in your own CI and publish `out/`.
+A `netlify.toml` is included at the repo root. **Strapi must be running during the Netlify build** so Next.js can fetch project data. The simplest path is to run `build:static` locally (or in your own CI) and publish `out/`.
 
 ### What is / isn't included
 
 | Included in static site | Not on Netlify (unless you host separately) |
 |---|---|
 | All project pages, about page, filters | Strapi admin UI |
-| Images & audio in `public/uploads/` | Live CMS editing |
+| Images & audio under `/uploads/` | Live CMS editing |
 | Content baked in at build time | SQLite at runtime |
 
 After CMS edits, re-run `build:static` and redeploy.
@@ -148,4 +184,5 @@ See older helpers in `marius-cms/scripts/` (`parse:wp`, `import:wp`, `convert:au
 | `better-sqlite3` build errors | Use Node 20/24 (`nvm use`) |
 | DB locked | Stop `npm run develop`, then run scripts |
 | About image / content missing on site | Ensure Strapi is running; restart `marius-web` dev server |
+| Images/audio point at `localhost:1337` on Netlify | Rebuild with `npm run build:static` (not `npm run build`); verify with `node scripts/verify-static-urls.mjs` |
 | `ffmpeg not found` | Install FFmpeg (above) |

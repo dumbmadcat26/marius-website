@@ -33,8 +33,8 @@ export function ProjectGridCard({
     <li
       className={styles.card}
       style={{ animationDelay: `${Math.min(index, 16) * 35}ms` }}
-      onPointerEnter={hasAudio ? onHoverStart : undefined}
-      onPointerLeave={hasAudio ? onHoverEnd : undefined}
+      onMouseEnter={hasAudio ? onHoverStart : undefined}
+      onMouseLeave={hasAudio ? onHoverEnd : undefined}
     >
       <Link href={`/projects/${project.slug}/`} className={styles.cardLink}>
         <div className={styles.media}>

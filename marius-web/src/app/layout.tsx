@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Sans } from "next/font/google";
+import { ClientProviders } from "@/components/ClientProviders";
 import { StartupScreen } from "@/components/StartupScreen";
 import { getSiteSetting } from "@/lib/strapi";
 import "./globals.css";
@@ -46,7 +47,9 @@ export default function RootLayout({
         <noscript>
           <style>{`[data-startup]{display:none!important}`}</style>
         </noscript>
-        <StartupScreen>{children}</StartupScreen>
+        <StartupScreen>
+          <ClientProviders>{children}</ClientProviders>
+        </StartupScreen>
       </body>
     </html>
   );
