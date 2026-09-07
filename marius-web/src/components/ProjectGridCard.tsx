@@ -36,7 +36,11 @@ export function ProjectGridCard({
       onMouseEnter={hasAudio ? onHoverStart : undefined}
       onMouseLeave={hasAudio ? onHoverEnd : undefined}
     >
-      <Link href={`/projects/${project.slug}/`} className={styles.cardLink}>
+      <Link
+        href={`/projects/${project.slug}/`}
+        className={styles.cardLink}
+        onClick={hasAudio ? onHoverEnd : undefined}
+      >
         <div className={styles.media}>
           {project.previewUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
