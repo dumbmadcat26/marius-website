@@ -1,0 +1,176 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  padding: 1.5rem;
+  background: #000;
+  cursor: pointer;
+  user-select: none;
+  overscroll-behavior: none;
+}
+
+.overlayLeaving .prompt {
+  animation: fadeOut 0.28s ease both;
+}
+
+.overlayFading {
+  animation: fadeOut 0.7s ease both;
+  pointer-events: none;
+}
+
+.stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: min(40rem, 78vmin);
+  max-width: 100%;
+}
+
+.scene {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+}
+
+.figure {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 56%;
+  animation: rise 0.7s ease both;
+}
+
+.vinyl {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  animation: vinylSpin 5s linear infinite;
+}
+
+.character {
+  width: 100%;
+  height: auto;
+  transform-origin: 50% 55%;
+}
+
+.shaking {
+  animation: shake 0.42s ease-in-out 2;
+}
+
+.running {
+  animation: runOff 0.95s ease-in forwards;
+}
+
+.prompt {
+  width: 100%;
+  margin: 1.35rem 0 0;
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  text-align: center;
+  animation: rise 0.7s ease 0.08s both;
+}
+
+@keyframes vinylSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  30% {
+    transform: rotate(10deg);
+  }
+  70% {
+    transform: rotate(-10deg);
+  }
+}
+
+@keyframes runOff {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  14% {
+    transform: translate(12vw, -12px) rotate(10deg);
+  }
+  28% {
+    transform: translate(26vw, 8px) rotate(-10deg);
+  }
+  42% {
+    transform: translate(42vw, -10px) rotate(10deg);
+  }
+  58% {
+    transform: translate(62vw, 6px) rotate(-8deg);
+  }
+  76% {
+    transform: translate(86vw, -4px) rotate(8deg);
+  }
+  100% {
+    transform: translate(120vw, 0) rotate(-4deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay,
+  .overlayFading,
+  .figure,
+  .prompt,
+  .vinyl,
+  .shaking,
+  .running {
+    animation: none;
+  }
+
+  .running {
+    opacity: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .stage {
+    width: min(22rem, 86vmin);
+  }
+
+  .figure {
+    width: 62%;
+  }
+
+  .prompt {
+    font-size: 0.8rem;
+  }
+}
