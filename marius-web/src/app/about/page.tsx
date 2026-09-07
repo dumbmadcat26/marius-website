@@ -46,6 +46,17 @@ export default async function AboutPage() {
             <p className={styles.text}>{site.locationNote}</p>
           ) : null}
 
+          {(site.whatIDo || []).length > 0 ? (
+            <section className={styles.section}>
+              <h2>What I do</h2>
+              <ul className={styles.plainList}>
+                {(site.whatIDo || []).map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
+
           <section className={styles.section}>
             <h2>Contact</h2>
             <ul className={styles.plainList}>
@@ -107,17 +118,6 @@ export default async function AboutPage() {
                     {item.organization || item.year ? " — " : ""}
                     {item.title}
                   </li>
-                ))}
-              </ul>
-            </section>
-          ) : null}
-
-          {(site.whatIDo || []).length > 0 ? (
-            <section className={styles.section}>
-              <h2>What I do</h2>
-              <ul className={styles.plainList}>
-                {(site.whatIDo || []).map((item) => (
-                  <li key={item}>{item}</li>
                 ))}
               </ul>
             </section>
